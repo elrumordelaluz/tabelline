@@ -12,7 +12,7 @@ const tables = Array.from({ length: 10 })
   .map((_, index) => index + 1)
   .reduce((acc, next) => {
     const m = Array.from({ length: 10 }).map((_, mIndex) => [
-      `${mIndex} × ${next}`,
+      `${next} × ${mIndex}`,
       mIndex * next,
     ])
     return { ...acc, [next]: m }

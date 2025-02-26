@@ -24,8 +24,10 @@ const FormSchema = z.object({
   value: z.string().min(1),
 })
 
+const SECONDS = 20
+
 export function Game({ tables }: Props) {
-  const [selected, setSelected] = useState([1, 2, 3])
+  const [selected, setSelected] = useState([2, 3, 4, 5])
   const [step, setStep] = useState(0)
   const [maxSteps, setMaxSteps] = useState(10)
   const [showConfetti, setShowConfetti] = useState<any>(null)
@@ -46,7 +48,7 @@ export function Game({ tables }: Props) {
 
   const { seconds, restart } = useTimer({
     expiryTimestamp: new Date(
-      new Date().setSeconds(new Date().getSeconds() + 10),
+      new Date().setSeconds(new Date().getSeconds() + SECONDS),
     ),
     onExpire: () => setTimedOut(true),
   })
@@ -65,14 +67,16 @@ export function Game({ tables }: Props) {
 
   function nextStep() {
     setStep((s) => s + 1)
-    const time = new Date(new Date().setSeconds(new Date().getSeconds() + 10))
+    const time = new Date(
+      new Date().setSeconds(new Date().getSeconds() + SECONDS),
+    )
     setTimedOut(false)
     restart(time, true)
     form.reset({ value: "" })
   }
 
   return (
-    <main className="relative z-50 flex min-h-screen flex-col">
+    <main className="relative z-50 flex min-h-dvh flex-col">
       <ShootingStars />
       <StarsBackground />
       <header className="relative mt-4 flex gap-2">
@@ -114,12 +118,16 @@ export function Game({ tables }: Props) {
                 </FormItem>
               )}
             />
+
+            <Button type="submit" variant="secondary">
+              Submit
+            </Button>
             {timedOut ? (
               <Button
                 variant="destructive"
+                className="ml-2"
                 onClick={() => {
                   nextStep()
-
                   setResults((r) =>
                     r.map((r, index) => (index === step ? false : r)),
                   )
@@ -127,11 +135,7 @@ export function Game({ tables }: Props) {
               >
                 Prossimo
               </Button>
-            ) : (
-              <Button type="submit" variant="secondary">
-                Submit
-              </Button>
-            )}
+            ) : null}
           </form>
         </Form>
 
@@ -169,13 +173,9 @@ export function shuffle<T>(array: T[]): T[] {
   let currentIndex = array.length,
     randomIndex
 
-  // While there remain elements to shuffle.
   while (currentIndex != 0) {
-    // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex)
     currentIndex--
-
-    // And swap it with the current element.
     ;[array[currentIndex], array[randomIndex]] = [
       array[randomIndex],
       array[currentIndex],
